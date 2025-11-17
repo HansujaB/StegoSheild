@@ -176,7 +176,7 @@ Detection Rate: ${results?.detection || '0.00%'}
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-blue-500/30">
               <Zap className="text-blue-500" size={18} />
-              <span>61+ dB PSNR</span>
+              <span>61+ dB PSNR even at 10KB payload</span>
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-purple-500/30">
               <Lock className="text-purple-500" size={18} />
@@ -184,7 +184,7 @@ Detection Rate: ${results?.detection || '0.00%'}
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-pink-500/30">
               <Minimize className="text-pink-500" size={18} />
-              <span>40% Smaller Files</span>
+              <span>35-40% Smaller Files</span>
             </div>
           </div>
 
