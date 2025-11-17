@@ -454,13 +454,3 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 - [ ] Browser extension
 - [ ] CLI tool for automated workflows
 
----
-
-<div align="center">
-
-**⭐ Star this repo if you find it useful! ⭐**
-
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/stegoshield?style=social)](https://github.com/yourusername/stegoshield/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/yourusername/stegoshield?style=social)](https://github.com/yourusername/stegoshield/network/members)
-
-</div>
