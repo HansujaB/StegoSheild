@@ -1,7 +1,28 @@
+import os
+import struct
+import random
+import math
+import logging
+import subprocess
+from typing import Tuple
+from PIL import Image
+import numpy as np
 
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.padding import PKCS7
+
+
+# ---------------------------------------------------------------------------
+# AES Encryption/Decryption Functions
+# ---------------------------------------------------------------------------
 def generate_aes_key():
     """Generate a 128-bit AES key."""
     return os.urandom(16)
+
 
 def aes_encrypt(plain_text, key):
     """Encrypt plain text using AES-128-CBC with PKCS7 padding."""
@@ -13,6 +34,7 @@ def aes_encrypt(plain_text, key):
     ciphertext = encryptor.update(padded_data) + encryptor.finalize()
     return iv, ciphertext
 
+
 def aes_decrypt(iv, ciphertext, key):
     """Decrypt ciphertext using AES-128-CBC with PKCS7 unpadding."""
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
@@ -22,12 +44,16 @@ def aes_decrypt(iv, ciphertext, key):
     plain_text = unpadder.update(padded_data) + unpadder.finalize()
     return plain_text.decode('utf-8')
 
-# # Cell 4: ECC Key Generation and ECIES for Encrypting/Decrypting AES Key
+
+# ---------------------------------------------------------------------------
+# ECC Key Generation and ECIES for Encrypting/Decrypting AES Key
+# ---------------------------------------------------------------------------
 def generate_ecc_key_pair():
     """Generate ECC key pair using SECP256R1."""
     private_key = ec.generate_private_key(ec.SECP256R1(), default_backend())
     public_key = private_key.public_key()
     return private_key, public_key
+
 
 def ecies_encrypt(payload, receiver_public_key):
     ephemeral_private = ec.generate_private_key(ec.SECP256R1(), default_backend())
@@ -76,7 +102,9 @@ def ecies_decrypt(ephemeral_public_bytes, iv, ciphertext, receiver_private_key):
     return payload
 
 
-# Cell 5: Inverted LSB (LSB Matching) Steganography Functions
+# ---------------------------------------------------------------------------
+# Inverted LSB (LSB Matching) Steganography Functions
+# ---------------------------------------------------------------------------
 def embed_inverted_lsb(image_path, payload_bytes, output_path):
     """Embed payload into image using inverted LSB (LSB matching)."""
     image = Image.open(image_path)
@@ -121,6 +149,7 @@ def embed_inverted_lsb(image_path, payload_bytes, output_path):
     stego_image.save(output_path)
     return output_path
 
+
 def extract_inverted_lsb(image_path):
     """Extract payload from stego image using LSB."""
     image = Image.open(image_path)
@@ -143,6 +172,17 @@ def extract_inverted_lsb(image_path):
     # Convert bits to bytes
     payload_bytes = bytes(int(payload_bits[j:j+8], 2) for j in range(0, len(payload_bits), 8))
     return payload_bytes
+
+
+# ---------------------------------------------------------------------------
+# WebP Compression Function
+# ---------------------------------------------------------------------------
+def compress_to_webp(input_path, output_path, quality=90):
+    """Compress image to WebP format."""
+    image = Image.open(input_path)
+    image.save(output_path, 'WEBP', quality=quality)
+    return output_path
+
 
 # ---------------------------------------------------------------------------
 # Quality metrics and detection helpers

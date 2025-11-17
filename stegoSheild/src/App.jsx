@@ -143,7 +143,7 @@ Detection Rate: ${results?.detection || '0.00%'}
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Shield className="w-8 h-8 text-blue-500" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <span className="text-2xl font-bold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             StegoShield
           </span>
         </div>
@@ -155,12 +155,12 @@ Detection Rate: ${results?.detection || '0.00%'}
         </button>
       </header>
 
-      <main className="flex-grow container mx-auto px-4 py-12">
+      <main className="grow container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               Military-Grade
-              <span className="block bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="block bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Steganography
               </span>
             </h1>
@@ -190,11 +190,11 @@ Detection Rate: ${results?.detection || '0.00%'}
 
           <button
             onClick={() => setCurrentPage('demo')}
-            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
+            className="group relative px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
           >
             <Shield className="inline-block mr-2" size={24} />
             Shield It Now
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-xl opacity-0 group-hover:opacity-20 blur transition" />
+            <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-purple-400 rounded-xl opacity-0 group-hover:opacity-20 blur transition" />
           </button>
 
           <div className="grid md:grid-cols-4 gap-6 mt-16">
@@ -207,7 +207,7 @@ Detection Rate: ${results?.detection || '0.00%'}
       </main>
 
       <footer className="container mx-auto px-4 py-8 border-t border-gray-800 text-center text-gray-500">
-        <p>Made with ❤️ at Hansuja • AES-256 Encryption • Inverted LSB Algorithm</p>
+        <p>Made with ❤️ by Hansuja</p>
       </footer>
     </div>
   );
@@ -295,7 +295,7 @@ Detection Rate: ${results?.detection || '0.00%'}
             <button
               onClick={handleSubmit}
               disabled={!coverImage || !secretMessage.trim() || isProcessing}
-              className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isProcessing ? (
                 <>
@@ -421,7 +421,7 @@ Detection Rate: ${results?.detection || '0.00%'}
       pink: 'from-pink-500/20 to-pink-600/20 border-pink-500/30'
     };
     return (
-      <div className={`p-6 rounded-xl bg-gradient-to-br ${colors[color]} border backdrop-blur`}>
+      <div className={`p-6 rounded-xl bg-linear-to-br ${colors[color]} border backdrop-blur`}>
         <div className="text-3xl font-bold mb-1">{value}</div>
         <div className="text-sm font-semibold text-gray-300 mb-1">{title}</div>
         <div className="text-xs text-gray-500">{subtitle}</div>
@@ -431,7 +431,7 @@ Detection Rate: ${results?.detection || '0.00%'}
 
   return (
     <div className={darkMode ? 'dark' : ''}>
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-black text-white">
+      <div className="min-h-screen bg-linear-to-br from-gray-900 via-gray-900 to-black text-white">
         <Toast />
         {currentPage === 'home' && <HomePage />}
         {currentPage === 'demo' && <DemoPage />}
