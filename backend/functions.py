@@ -177,10 +177,10 @@ def extract_inverted_lsb(image_path):
 # ---------------------------------------------------------------------------
 # WebP Compression Function
 # ---------------------------------------------------------------------------
-def compress_to_webp(input_path, output_path, quality=90):
+def compress_to_webp(input_path, output_path, quality=100):
     """Compress image to WebP format."""
     image = Image.open(input_path)
-    image.save(output_path, 'WEBP', quality=quality)
+    image.save(output_path, 'WEBP', lossless=True, quality=100)
     return output_path
 
 
