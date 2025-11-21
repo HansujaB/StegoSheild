@@ -143,79 +143,6 @@
 //     );
 //   };
 
-//   const HomePage = () => (
-//     <div className="min-h-screen flex flex-col">
-//       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-//         <div className="flex items-center gap-2">
-//           <Shield className="w-8 h-8 text-blue-500" />
-//           <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-//             StegoShield
-//           </span>
-//         </div>
-//         <button
-//           onClick={() => setDarkMode(!darkMode)}
-//           className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
-//         >
-//           {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-//         </button>
-//       </header>
-
-//       <main className="grow container mx-auto px-4 py-12">
-//         <div className="max-w-4xl mx-auto text-center space-y-8">
-//           <div className="space-y-4">
-//             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-//               Military-Grade
-//               <span className="block bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-//                 Steganography
-//               </span>
-//             </h1>
-//             <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
-//               Hide secrets in plain sight with undetectable, lossless encryption
-//             </p>
-//           </div>
-
-//           <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
-//             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-green-500/30">
-//               <CheckCircle className="text-green-500" size={18} />
-//               <span>0% Detection</span>
-//             </div>
-//             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-blue-500/30">
-//               <Zap className="text-blue-500" size={18} />
-//               <span>61+ dB PSNR even at 10KB payload</span>
-//             </div>
-//             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-purple-500/30">
-//               <Lock className="text-purple-500" size={18} />
-//               <span>99.6% Avalanche</span>
-//             </div>
-//             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-pink-500/30">
-//               <Minimize className="text-pink-500" size={18} />
-//               <span>35-40% Smaller Files</span>
-//             </div>
-//           </div>
-
-//           <button
-//             onClick={() => setCurrentPage('demo')}
-//             className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
-//           >
-//             <Shield className="inline-block mr-2" size={24} />
-//             Shield It Now
-//             <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-xl opacity-0 group-hover:opacity-20 blur transition" />
-//           </button>
-
-//           <div className="grid md:grid-cols-4 gap-6 mt-16">
-//             <StatCard title="PSNR" value="70.46 dB" subtitle="Peak Signal Quality" color="blue" />
-//             <StatCard title="Detection" value="0.00%" subtitle="StegExpose Safe" color="green" />
-//             <StatCard title="Compression" value="40.9%" subtitle="File Size Reduction" color="purple" />
-//             <StatCard title="Avalanche" value="99.6%" subtitle="Encryption Strength" color="pink" />
-//           </div>
-//         </div>
-//       </main>
-
-//       <footer className="container mx-auto px-4 py-8 border-t border-gray-800 text-center text-gray-500">
-//         <p>Made with ❤️ by Hansuja</p>
-//       </footer>
-//     </div>
-//   );
 
 //   const DemoPage = () => (
 //     <div className="min-h-screen py-8">
@@ -475,7 +402,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Upload, Shield, Download, CheckCircle, AlertCircle, Loader2, Copy, Moon, Sun, Lock, Zap, Minimize } from 'lucide-react';
 
 const App = () => {
-  const [darkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(true);
   const [currentPage, setCurrentPage] = useState('home');
   const [coverImage, setCoverImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -627,10 +554,16 @@ Detection: ${results?.detection || '0.00'}%
       <header className="container mx-auto px-4 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Shield className="w-8 h-8 text-blue-500" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <span className="text-2xl font-bold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             StegoShield
           </span>
         </div>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
+        >
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
       </header>
 
       <main className="grow container mx-auto px-4 py-12">
@@ -638,7 +571,7 @@ Detection: ${results?.detection || '0.00'}%
           <div className="space-y-4">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               Military-Grade
-              <span className="block bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="block bg-linear-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
                 Steganography
               </span>
             </h1>
@@ -647,17 +580,49 @@ Detection: ${results?.detection || '0.00'}%
             </p>
           </div>
 
+          <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-green-500/30">
+              <CheckCircle className="text-green-500" size={18} />
+              <span>0% Detection</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-blue-500/30">
+              <Zap className="text-blue-500" size={18} />
+              <span>61+ dB PSNR even at 10KB payload</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-purple-500/30">
+              <Lock className="text-purple-500" size={18} />
+              <span>99.6% Avalanche</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-pink-500/30">
+              <Minimize className="text-pink-500" size={18} />
+              <span>35-40% Smaller Files</span>
+            </div>
+          </div>
+
           <button
             onClick={() => setCurrentPage('demo')}
-            className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
+            className="group relative px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105"
           >
             <Shield className="inline-block mr-2" size={24} />
             Shield It Now
+            <div className="absolute inset-0 bg-linear-to-r from-blue-400 to-purple-400 rounded-xl opacity-0 group-hover:opacity-20 blur transition" />
           </button>
+
+          {/* <div className="grid md:grid-cols-4 gap-6 mt-16">
+            <StatCard title="PSNR" value="70.46 dB" subtitle="Peak Signal Quality" color="blue" />
+            <StatCard title="Detection" value="0.00%" subtitle="StegExpose Safe" color="green" />
+            <StatCard title="Compression" value="40.9%" subtitle="File Size Reduction" color="purple" />
+            <StatCard title="Avalanche" value="99.6%" subtitle="Encryption Strength" color="pink" />
+          </div> */}
         </div>
       </main>
+
+      <footer className="container mx-auto px-4 py-8 border-t border-gray-800 text-center text-gray-500">
+        <p>Made with ❤️ by Hansuja</p>
+      </footer>
     </div>
   );
+
 
   const DemoPage = () => (
     <div className="min-h-screen py-8">
