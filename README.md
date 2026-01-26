@@ -91,6 +91,10 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
+# Create a dev env file (required for Clerk + key encryption)
+# Create: backend/.env
+# Then set values (example below in "Environment Variables" section)
+
 # Run Flask server
 python app.py
 ```
@@ -104,6 +108,10 @@ cd frontend
 
 # Install dependencies
 npm install
+
+# Create frontend env (required for Clerk)
+# Create: stegoSheild/.env.local
+# Then set VITE_CLERK_PUBLISHABLE_KEY=...
 
 # Start React app
 npm start
@@ -178,6 +186,53 @@ Download stego PNG image.
 Download stego WebP image (lossless).
 
 ---
+
+## 🔐 Clerk + .env Setup (Dev)
+
+### Step 1: Create a Clerk project
+- Go to Clerk dashboard and create a new application.
+- Enable **Google** (or any provider you want) under **User & Authentication → Social connections**.
+- Copy your **Publishable key**.
+
+### Step 2: Frontend env file
+Create `stegoSheild/.env.local`:
+
+```env
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_XXXXXXXXXXXX
+```
+
+Restart the Vite dev server after changing env files.
+
+### Step 3: Backend env file
+Create `backend/.env`:
+
+```env
+FLASK_ENV=development
+FLASK_SECRET_KEY=dev-secret
+DATABASE_URL=sqlite:///stegoshield.db
+
+# 32-byte key base64. Generate with:
+# python -c "import os,base64; print(base64.b64encode(os.urandom(32)).decode())"
+MASTER_KEY=REPLACE_WITH_BASE64_32_BYTE_KEY
+
+# Clerk JWKS (required so backend can verify Clerk session tokens)
+# Find your Clerk domain/issuer in Clerk dashboard. If unsure:
+# - Use your app's Frontend API domain and build:
+#   https://<your-frontend-api>/.well-known/jwks.json
+CLERK_JWKS_URL=https://YOUR-CLERK-DOMAIN/.well-known/jwks.json
+
+# Optional in dev (backend will skip if unset):
+# CLERK_ISS=https://YOUR-CLERK-DOMAIN
+# CLERK_AUDIENCE=YOUR_AUDIENCE
+```
+
+### Step 4: Run
+- Backend: `cd backend` then `.\venv\Scripts\python.exe app.py`
+- Frontend: `cd stegoSheild` then `npm run dev`
+
+### Notes
+- SQLite file DB will be created automatically: `backend/stegoshield.db`
+- Each Clerk user gets their own ECC keypair stored in SQLite (encrypted with `MASTER_KEY`).
 
 ## 🔐 Encryption Pipeline
 
