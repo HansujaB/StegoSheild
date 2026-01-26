@@ -3,6 +3,7 @@
 **Military-Grade Steganography with Hybrid Encryption**
 
 Hide secrets in plain sight with undetectable, lossless encryption. StegoShield combines AES-256 encryption with advanced LSB steganography to embed encrypted data into images while maintaining exceptional visual quality.
+Based on research paper backend accepted at WcCST 2026 
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0-green.svg)](https://flask.palletsprojects.com/)
@@ -329,79 +330,17 @@ embed_inverted_lsb("cover.png", ciphertext, "stego.png")
 - **Lossless WebP**: No data corruption
 
 ---
-
-## ⚠️ Security Considerations
-
-### Production Deployment
-
-**⚠️ This implementation is for educational/demonstration purposes.**
-
-For production use, implement:
-
 - ✅ **Persistent Key Storage**: Use HSM or key vault (e.g., AWS KMS, Azure Key Vault)
-- ✅ **User Authentication**: JWT tokens, OAuth2, or session management
+- ✅ **User Authentication**: Clerk for user authentication
 - ✅ **HTTPS/TLS**: Encrypt all network traffic
 - ✅ **Rate Limiting**: Prevent abuse (e.g., Flask-Limiter)
 - ✅ **Input Validation**: Sanitize all file uploads
 - ✅ **Logging & Monitoring**: Track security events
 - ✅ **CSRF Protection**: Use Flask-WTF or similar
 - ✅ **File Cleanup**: Auto-delete processed files after X hours
-
-### Current Limitations
-
-- 🔴 Keys stored in memory (lost on server restart)
-- 🔴 No user authentication
-- 🔴 HTTP only (no HTTPS)
-- 🔴 Files stored on disk indefinitely
-
 ---
 
-## 📦 Dependencies
 
-### Backend (Python)
-
-```
-Flask==3.0.0              # Web framework
-flask-cors==4.0.0         # CORS support
-cryptography==41.0.7      # Encryption primitives
-Pillow==10.1.0            # Image processing
-numpy==1.26.2             # Numerical operations
-```
-
-### Frontend (JavaScript)
-
-```
-react==18.2.0             # UI framework
-lucide-react==0.263.1     # Icon library
-tailwindcss==3.3.0        # CSS framework
-```
-
----
-
-## 🧪 Testing
-
-### Run Unit Tests
-
-```bash
-cd backend
-python -m pytest tests/
-```
-
-### Manual Testing
-
-1. **Image Quality Test**:
-   - Upload a high-resolution image
-   - Verify PSNR > 60 dB
-
-2. **Detection Test**:
-   - Run StegExpose on output image
-   - Confirm 0% detection rate
-
-3. **Extraction Test**:
-   - Decrypt and extract message
-   - Verify original message integrity
-
----
 
 ## 🐛 Troubleshooting
 
