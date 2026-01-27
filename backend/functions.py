@@ -106,72 +106,78 @@ def ecies_decrypt(ephemeral_public_bytes, iv, ciphertext, receiver_private_key):
 # Inverted LSB (LSB Matching) Steganography Functions
 # ---------------------------------------------------------------------------
 def embed_inverted_lsb(image_path, payload_bytes, output_path):
-    """Embed payload into image using inverted LSB (LSB matching)."""
-    image = Image.open(image_path)
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-    pixels = list(image.getdata())
-    flat_pixels = [channel for pixel in pixels for channel in pixel]  # Flatten to list of channels
+    """Embed payload into image using inverted LSB (LSB matching) - NumPy Optimized."""
+    img = Image.open(image_path)
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+    
+    # Convert image to NumPy array for memory efficiency
+    data = np.array(img)
+    shape = data.shape
+    flat_pixels = data.flatten()
 
-    # Convert payload to bits
-    payload_bits = ''.join(f'{byte:08b}' for byte in payload_bytes)
-
-    # Embed length first (4 bytes for payload length in bytes)
+    # Prepare bits: 32 bits for length + the payload
     length = len(payload_bytes)
     length_bytes = struct.pack('>I', length)
-    length_bits = ''.join(f'{byte:08b}' for byte in length_bytes)
+    all_bytes = length_bytes + payload_bytes
+    
+    # Efficiently convert bytes to bit array
+    # We use a bitmask approach to avoid slow string manipulation
+    payload_bits = np.unpackbits(np.frombuffer(all_bytes, dtype=np.uint8))
+    
+    if len(payload_bits) > len(flat_pixels):
+        raise ValueError(f"Image too small. Need {len(payload_bits)} bits, have {len(flat_pixels)} capacity.")
 
-    all_bits = length_bits + payload_bits
-    bit_index = 0
+    # Apply LSB Matching (Inverted LSB)
+    # We only iterate over the part of the image we need
+    # Convert to int16 to avoid overflow during adjustment
+    target_part = flat_pixels[:len(payload_bits)].astype(np.int16)
+    lsb_mask = target_part % 2
+    
+    # Where image LSB doesn't match payload bit, adjust by +/- 1
+    mismatch = (lsb_mask != payload_bits)
+    if np.any(mismatch):
+        # Generate random -1 or 1 for each mismatch
+        adjustments = np.random.choice([-1, 1], size=np.count_nonzero(mismatch))
+        target_part[mismatch] += adjustments
+        
+        # Parity-preserving boundary handling (matching original logic)
+        # If we went below 0 (0-1), force to 1. If above 255 (255+1), force to 254.
+        target_part[target_part < 0] = 1
+        target_part[target_part > 255] = 254
 
-    for i in range(len(flat_pixels)):
-        if bit_index >= len(all_bits):
-            break
-        b = int(all_bits[bit_index])
-        v = flat_pixels[i]
-        if (v % 2) != b:
-            adjustment = random.choice([-1, 1])
-            v += adjustment
-            if v < 0:
-                v = 1
-            elif v > 255:
-                v = 254
-        flat_pixels[i] = v
-        bit_index += 1
-
-    if bit_index < len(all_bits):
-        raise ValueError("Image too small for payload")
-
-    # Reconstruct pixels
-    new_pixels = [(flat_pixels[j], flat_pixels[j+1], flat_pixels[j+2]) for j in range(0, len(flat_pixels), 3)]
-    stego_image = Image.new('RGB', image.size)
-    stego_image.putdata(new_pixels)
+    flat_pixels[:len(payload_bits)] = target_part.astype(np.uint8)
+    
+    # Reconstruct and save
+    new_data = flat_pixels.reshape(shape)
+    stego_image = Image.fromarray(new_data)
     stego_image.save(output_path)
     return output_path
 
 
 def extract_inverted_lsb(image_path):
-    """Extract payload from stego image using LSB."""
-    image = Image.open(image_path)
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-    pixels = list(image.getdata())
-    flat_pixels = [channel for pixel in pixels for channel in pixel]
+    """Extract payload from stego image using LSB - NumPy Optimized."""
+    img = Image.open(image_path)
+    if img.mode != 'RGB':
+        img = img.convert('RGB')
+    
+    data = np.array(img)
+    flat_pixels = data.flatten()
 
-    # Extract length bits first (32 bits)
-    length_bits = ''
-    for i in range(32):
-        length_bits += str(flat_pixels[i] % 2)
-    length = struct.unpack('>I', int(length_bits, 2).to_bytes(4, 'big'))[0]
+    # Extract length first (32 bits)
+    length_bits = flat_pixels[:32] % 2
+    length_bytes = np.packbits(length_bits.astype(np.uint8))
+    length = struct.unpack('>I', length_bytes.tobytes())[0]
 
-    # Extract payload bits
-    payload_bits = ''
-    for i in range(32, 32 + length * 8):
-        payload_bits += str(flat_pixels[i] % 2)
-
-    # Convert bits to bytes
-    payload_bytes = bytes(int(payload_bits[j:j+8], 2) for j in range(0, len(payload_bits), 8))
-    return payload_bytes
+    # Extract payload
+    total_bits = 32 + (length * 8)
+    if total_bits > len(flat_pixels):
+        raise ValueError("Invalid stego image or corrupted data.")
+        
+    payload_bits = flat_pixels[32:total_bits] % 2
+    payload_bytes = np.packbits(payload_bits.astype(np.uint8))
+    
+    return payload_bytes.tobytes()
 
 
 # ---------------------------------------------------------------------------
@@ -227,7 +233,3 @@ def calculate_mse_psnr(original_path: str, stego_path: str) -> Tuple[float, floa
 #     except subprocess.CalledProcessError as exc:
 #         logging.error("StegExpose failed: %s", exc)
 #     return 0.0
-
-def stegexpose(image_path: str):
-    logging.info("StegExpose skipped (Docker not enabled yet)")
-    return 0.0
