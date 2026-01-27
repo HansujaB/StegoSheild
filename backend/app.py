@@ -32,7 +32,12 @@ from functions import (
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# CORS configuration: Allow production Vercel URL and optional localhost for dev
+allowed_origins = [
+    "https://stego-sheild.vercel.app",
+    "http://localhost:5173",
+]
+CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -223,8 +228,17 @@ def recover():
                 pass
 
 
+# Port for deployment (Render/Railway injects PORT env var)
+port = int(os.environ.get("PORT", 5000))
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    print("StegoShield Backend Running on http://localhost:5000")
-    app.run(debug=True, port=5000)
+    print(f"StegoShield Backend Running on http://localhost:{port}")
+    app.run(debug=True, port=port)
+else:
+    # This runs when imported by gunicorn in production
+    with app.app_context():
+        # Ensure tables are created if using a SQL database
+        if not app.config['SQLALCHEMY_DATABASE_URI'].startswith('sqlite'):
+            db.create_all()

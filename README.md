@@ -120,7 +120,6 @@ npm run dev
 
 Frontend runs on: **http://localhost:5173** (Vite default)
 
-
 ---
 
 ## 📁 Project Structure
@@ -254,9 +253,9 @@ CLERK_JWKS_URL=https://YOUR-CLERK-DOMAIN/.well-known/jwks.json
 - Frontend: `cd stegoSheild` then `npm run dev`
 
 ### Notes
-- SQLite file DB will be created automatically: `backend/instance/stegoshield.db`
-- Each Clerk user gets their own ECC keypair stored in SQLite.
-- Private keys are encrypted using AES-GCM with the `MASTER_KEY` before being saved to the database.
+- **Persistence**: Managed via PostgreSQL (Neon) for production environments, ensuring user data and encryption keys are stored securely across sessions.
+- **Security**: Private keys are encrypted using AES-GCM with a server-side `MASTER_KEY` before being committed to the database.
+- **Scaling**: Optimized for cloud-native deployment with integrated support for dynamic `PORT` assignment.
 
 ---
 
@@ -371,14 +370,12 @@ embed_inverted_lsb("cover.png", ciphertext, "stego.png")
 - **Lossless WebP**: No data corruption
 
 ---
-- ✅ **Persistent Key Storage**: Use HSM or key vault (e.g., AWS KMS, Azure Key Vault)
-- ✅ **User Authentication**: Clerk for user authentication
-- ✅ **HTTPS/TLS**: Encrypt all network traffic
-- ✅ **Rate Limiting**: Prevent abuse (e.g., Flask-Limiter)
-- ✅ **Input Validation**: Sanitize all file uploads
-- ✅ **Logging & Monitoring**: Track security events
-- ✅ **CSRF Protection**: Use Flask-WTF or similar
-- ✅ **File Cleanup**: Auto-delete processed files after X hours
+- ✅ **PostgreSQL Support**: Integrated `psycopg2` and dynamic URI handling for Neon/Render.
+- ✅ **Secure CORS**: Restricted API access to production domains.
+- ✅ **Dynamic Porting**: Support for cloud-injected `PORT` variables.
+- ✅ **User Authentication**: Clerk for user authentication.
+- ✅ **Rate Limiting**: Prevent abuse (e.g., Flask-Limiter).
+- ✅ **File Cleanup**: Auto-delete processed files after processing.
 ---
 
 
