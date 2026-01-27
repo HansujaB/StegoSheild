@@ -27,7 +27,7 @@ def preprocess_single_image(input_path, output_dir='./preprocessed_images'):
     os.makedirs(output_dir, exist_ok=True)
     
     try:
-        print(f"\n🖼️  Processing: {input_path}")
+        print(f"\n Processing: {input_path}")
         
         # Open image
         img = Image.open(input_path)
@@ -62,12 +62,12 @@ def preprocess_single_image(input_path, output_dir='./preprocessed_images'):
         
         # Save as PNG
         img.save(output_path, 'PNG')
-        print(f"   ✅ Saved to: {output_path}")
+        print(f"    Saved to: {output_path}")
         
         return output_path
         
     except Exception as e:
-        print(f"   ❌ Error processing image: {e}")
+        print(f"   Error processing image: {e}")
         return None
 
 
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     result = preprocess_single_image(input_image, output_directory)
     
     if result:
-        print(f"\n✨ Success! Preprocessed image saved to: {result}")
+        print(f"\n Success! Preprocessed image saved to: {result}")
     else:
-        print(f"\n❌ Failed to preprocess image")
+        print(f"\n Failed to preprocess image")
         sys.exit(1)

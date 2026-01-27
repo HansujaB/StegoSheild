@@ -105,7 +105,7 @@ Backend runs on: **http://localhost:5000**
 ### 3️⃣ Frontend Setup
 
 ```bash
-cd frontend
+cd stegoSheild
 
 # Install dependencies
 npm install
@@ -115,10 +115,11 @@ npm install
 # Then set VITE_CLERK_PUBLISHABLE_KEY=...
 
 # Start React app
-npm start
+npm run dev
 ```
 
-Frontend runs on: **http://localhost:3000**
+Frontend runs on: **http://localhost:5173** (Vite default)
+
 
 ---
 
@@ -128,17 +129,22 @@ Frontend runs on: **http://localhost:3000**
 stegoshield/
 │
 ├── backend/
-│   ├── app.py                    # Flask API server
-│   ├── functions.py              # Core crypto & stego functions
-│   ├── preprocessing.py          # Image preprocessing utility
+│   ├── app.py                    # Flask API server & endpoint routing
+│   ├── auth.py                   # Clerk JWT authentication middleware
+│   ├── config.py                 # App configuration & env loading
+│   ├── database.py               # SQLAlchemy instance initialization
+│   ├── models.py                 # Database schemas (User, KeyPair, Operation)
+│   ├── key_manager.py            # ECC key generation & AES-GCM encryption
+│   ├── functions.py              # Core crypto & stego logic
+│   ├── preprocessing.py          # Image normalization utility
 │   ├── requirements.txt          # Python dependencies
-│   ├── uploads/                  # Temporary file storage
-│   └── venv/                     # Virtual environment (gitignored)
+│   ├── uploads/                  # Temporary file processing storage
+│   └── instance/                 # SQLite database storage
 │
-├── frontend/
+├── stegoSheild/          # React + Vite frontend
 │   ├── src/
 │   │   ├── App.jsx              # Main React component
-│   │   └── index.js             # React entry point
+│   │   └── main.jsx             # React entry point
 │   ├── public/
 │   ├── package.json             # Node dependencies
 │   └── tailwind.config.js       # Tailwind CSS config
@@ -152,12 +158,13 @@ stegoshield/
 
 ### **POST** `/api/process`
 
-Encrypt message and embed into image.
+Encrypt message and embed into image. Requires Clerk authentication.
 
 **Request:**
 ```http
 POST /api/process
 Content-Type: multipart/form-data
+Authorization: Bearer <clerk_token>
 
 image: <file>           # Cover image (PNG/JPEG)
 payload: <string>       # Secret message (max 10KB)
@@ -167,24 +174,39 @@ payload: <string>       # Secret message (max 10KB)
 ```json
 {
   "success": true,
-  "psnr": "70.46",
-  "mse": "0.0023",
+  "psnr_png": "70.46",
+  "psnr_webp": "70.82",
+  "mse_png": "0.0023",
+  "mse_webp": "0.0021",
   "size_png": "256.34 KB",
   "size_webp": "151.89 KB",
-  "savings": "40.75%",
-  "detection": "0.00%",
-  "png_url": "http://localhost:5000/download/png",
-  "webp_url": "http://localhost:5000/download/webp"
+  "savings": "40.75",
+  "detection": "0.00",
+  "png_base64": "data:image/png;base64,...",
+  "webp_base64": "data:image/webp;base64,..."
 }
 ```
 
-### **GET** `/download/png`
+### **POST** `/api/recover`
 
-Download stego PNG image.
+Extract and decrypt message from a stego image. Requires Clerk authentication.
 
-### **GET** `/download/webp`
+**Request:**
+```http
+POST /api/recover
+Content-Type: multipart/form-data
+Authorization: Bearer <clerk_token>
 
-Download stego WebP image (lossless).
+image: <file>           # Stego image (PNG/WebP)
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "The original secret message"
+}
+```
 
 ---
 
@@ -232,8 +254,27 @@ CLERK_JWKS_URL=https://YOUR-CLERK-DOMAIN/.well-known/jwks.json
 - Frontend: `cd stegoSheild` then `npm run dev`
 
 ### Notes
-- SQLite file DB will be created automatically: `backend/stegoshield.db`
-- Each Clerk user gets their own ECC keypair stored in SQLite (encrypted with `MASTER_KEY`).
+- SQLite file DB will be created automatically: `backend/instance/stegoshield.db`
+- Each Clerk user gets their own ECC keypair stored in SQLite.
+- Private keys are encrypted using AES-GCM with the `MASTER_KEY` before being saved to the database.
+
+---
+
+## 🗄️ Database & Storage
+
+StegoShield uses **SQLAlchemy** with **SQLite** for managing users, security keys, and operation logs.
+
+### **Schema Overview**
+
+1.  **Users Table**: Maps Clerk authentication IDs (`auth_sub`) to local user profiles.
+2.  **KeyPairs Table**: Stores per-user Elliptic Curve (SECP256R1) keys.
+    *   **Public Key**: Stored in PEM format for encryption.
+    *   **Private Key**: Encrypted with `MASTER_KEY` (AES-GCM) + unique nonce for security at rest.
+3.  **Operations Table**: Audit log of all encryption and decryption events (type, timestamp, user).
+
+### **Data Security**
+*   **Zero-Knowledge (almost)**: The server never stores secret messages. They exist only in memory during processing and are embedded into images.
+*   **Key Protection**: Even if the database is compromised, private keys cannot be used without the `MASTER_KEY` defined in the environment variables.
 
 ## 🔐 Encryption Pipeline
 
@@ -302,7 +343,7 @@ embed_inverted_lsb("cover.png", ciphertext, "stego.png")
 
 ### Web Interface
 
-1. Navigate to **http://localhost:3000**
+1. Navigate to **http://localhost:5173**
 2. Click **"Shield It Now"**
 3. Upload a cover image (PNG/JPEG, max 5MB)
 4. Enter your secret message (max 10KB)
