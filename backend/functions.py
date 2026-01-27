@@ -205,25 +205,29 @@ def calculate_mse_psnr(original_path: str, stego_path: str) -> Tuple[float, floa
     return mse, psnr
 
 
-def stegexpose(image_path: str) -> float:
-    """
-    Run StegExpose CLI if available and return detection score (0-100%).
-    Falls back to 0.0 if the command is missing.
-    """
-    try:
-        result = subprocess.run(
-            ["stegexpose", image_path],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        for line in result.stdout.splitlines():
-            if "%" in line:
-                digits = "".join(ch for ch in line if ch.isdigit() or ch == ".")
-                if digits:
-                    return float(digits)
-    except FileNotFoundError:
-        logging.warning("StegExpose CLI not found; returning 0.0%% detection probability.")
-    except subprocess.CalledProcessError as exc:
-        logging.error("StegExpose failed: %s", exc)
-    return 0.0
+# def stegexpose(image_path: str) -> float:
+#     """
+#     Run StegExpose CLI if available and return detection score (0-100%).
+#     Falls back to 0.0 if the command is missing.
+#     """
+#     try:
+#         result = subprocess.run(
+#             ["stegexpose", image_path],
+#             capture_output=True,
+#             text=True,
+#             check=True,
+#         )
+#         for line in result.stdout.splitlines():
+#             if "%" in line:
+#                 digits = "".join(ch for ch in line if ch.isdigit() or ch == ".")
+#                 if digits:
+#                     return float(digits)
+#     except FileNotFoundError:
+#         logging.warning("StegExpose CLI not found; returning 0.0%% detection probability.")
+#     except subprocess.CalledProcessError as exc:
+#         logging.error("StegExpose failed: %s", exc)
+#     return 0.0
+
+def stegexpose(image_path: str):
+    logging.info("StegExpose skipped (Docker not enabled yet)")
+    return None
