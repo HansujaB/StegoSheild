@@ -230,4 +230,4 @@ def calculate_mse_psnr(original_path: str, stego_path: str) -> Tuple[float, floa
 
 def stegexpose(image_path: str):
     logging.info("StegExpose skipped (Docker not enabled yet)")
-    return None
+    return 0.0

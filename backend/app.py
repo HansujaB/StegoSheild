@@ -25,7 +25,6 @@ from functions import (
     extract_inverted_lsb,
     compress_to_webp,
     calculate_mse_psnr,
-    stegexpose,
 )
 
 
@@ -119,7 +118,7 @@ def process():
         size_png = os.path.getsize(stego_png_path) / 1024
         size_webp = os.path.getsize(webp_path) / 1024
         savings = round((size_png - size_webp) / size_png * 100, 2) if size_png > 0 else 0
-        detection = round(stegexpose(stego_png_path), 2)
+        # detection = "0.00"
 
         # Convert to Base64
         with open(stego_png_path, "rb") as f:
@@ -143,7 +142,7 @@ def process():
                 "size_png": f"{size_png:.2f} KB",
                 "size_webp": f"{size_webp:.2f} KB",
                 "savings": f"{savings:.2f}",
-                "detection": f"{detection:.2f}",
+                # "detection": f"{detection:.2f}",
                 "png_base64": f"data:image/png;base64,{png_b64}",
                 "webp_base64": f"data:image/webp;base64,{webp_b64}",
             }

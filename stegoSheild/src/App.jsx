@@ -251,10 +251,10 @@ Detection: ${results?.detection || '0.00'}%
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
-            <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-green-500/30">
+            {/* <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-green-500/30">
               <CheckCircle className="text-green-500" size={18} />
               <span>0% Detection</span>
-            </div>
+            </div> */}
             <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-full border border-blue-500/30">
               <Zap className="text-blue-500" size={18} />
               <span>61+ dB PSNR even at 10KB payload</span>
@@ -438,7 +438,7 @@ Detection: ${results?.detection || '0.00'}%
             <div className="flex justify-between"><span className="text-gray-400">File Size (PNG):</span> <span className="font-mono">{results?.size_png}</span></div>
             <div className="flex justify-between"><span className="text-gray-400">File Size (WebP):</span> <span className="font-mono text-purple-400">{results?.size_webp}</span></div>
             <div className="flex justify-between"><span className="text-gray-400">Savings:</span> <span className="font-mono text-green-400">{results?.savings}%</span></div>
-            <div className="flex justify-between"><span className="text-gray-400">StegExpose Detection:</span> <span className="font-mono text-green-400">{results?.detection}%</span></div>
+            {/* <div className="flex justify-between"><span className="text-gray-400">StegExpose Detection:</span> <span className="font-mono text-green-400">{results?.detection}%</span></div> */}
           </div>
         </div>
 
