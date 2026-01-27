@@ -37,7 +37,11 @@ allowed_origins = [
     "https://stego-sheild.vercel.app",
     "http://localhost:5173",
 ]
-CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
+CORS(app, resources={r"/api/*": {
+    "origins": allowed_origins,
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}})
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
