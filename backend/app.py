@@ -34,6 +34,7 @@ db.init_app(app)
 # CORS configuration: Allow production Vercel URL and optional localhost for dev
 allowed_origins = [
     "https://stego-sheild.vercel.app",
+    "https://stego-sheild-rn7qfew5k-hansujabs-projects.vercel.app",
     "http://localhost:5173",
 ]
 CORS(app, resources={r"/api/*": {
@@ -118,8 +119,8 @@ def process():
         size_png = os.path.getsize(stego_png_path) / 1024
         size_webp = os.path.getsize(webp_path) / 1024
         savings = round((size_png - size_webp) / size_png * 100, 2) if size_png > 0 else 0
-        # detection = "0.00"
-
+        #detection = round(stegexpose(stego_png_path), 2)
+        
         # Convert to Base64
         with open(stego_png_path, "rb") as f:
             png_b64 = base64.b64encode(f.read()).decode("utf-8")
