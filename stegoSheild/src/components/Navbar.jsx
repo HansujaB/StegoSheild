@@ -20,7 +20,7 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-8 lg:px-12 h-16 flex items-center justify-between">
         {/* Logo */}
         <button
           onClick={() => setCurrentPage('home')}
@@ -41,7 +41,7 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
 
         {/* Nav links (signed in) */}
         <SignedIn>
-          <nav className="hidden sm:flex items-center gap-1">
+          <nav className="hidden sm:flex items-center gap-2">
             {[
               { key: 'home', label: 'Home' },
               { key: 'demo', label: 'Encrypt' },
@@ -87,16 +87,22 @@ const Navbar = ({ currentPage, setCurrentPage }) => {
               <SignInButton>
                 <button
                   id="nav-sign-in"
-                  className="px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200"
+                  className="text-sm font-semibold rounded-lg transition-all duration-200"
                   style={{
+                    padding: '0.5rem 1.5rem',
                     color: 'var(--black)',
                     backgroundColor: 'var(--white)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    lineHeight: '1.4',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'var(--gray-200)';
+                    e.currentTarget.style.transform = 'translateY(-1px)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'var(--white)';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
                   Sign in
